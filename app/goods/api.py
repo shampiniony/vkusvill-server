@@ -1,8 +1,11 @@
+from typing import List
+
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.goods.models import Goods as GoodsModel
 from app.model import predict
 
 from . import crud
@@ -72,3 +75,42 @@ def read_all_goods(db: Session = Depends(get_db)):
 def read_all_shelves(db: Session = Depends(get_db)):
     shelves = crud.get_all_shelves(db=db)
     return [shelve[0] for shelve in shelves]
+
+
+@router.put("/dt/{new_dt}", response_model=list[Goods])
+def update_all_goods_dt(new_dt: int, db: Session = Depends(get_db)):
+    if new_dt < 0 or new_dt > 13:
+        raise HTTPException(status_code=400, detail="dt must be between 0 and 13")
+
+    all_goods = db.query(GoodsModel).all()
+
+    if not all_goods:
+        raise HTTPException(status_code=404, detail="No goods found")
+
+    updated_goods = []
+
+    for item in all_goods:
+        item.dt = new_dt
+
+        input_data = pd.DataFrame(
+            {
+                "sku_id": [item.sku_id],
+                "name": [item.name],
+                "category": [item.category],
+                "amount": [item.amount],
+                "avg_cart": [item.avg_cart],
+                "t_expiery": [item.t_expiery],
+                "stocktaking_time": [item.stocktaking_time],
+                "dt": [new_dt],
+            }
+        )
+
+        predicted_trigger = predict(input_data).data[0]
+
+        item.trigger = predicted_trigger
+
+        updated_goods.append(item)
+
+    db.commit()
+
+    return updated_goods
