@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: backend
+    ports:
+      - "8000:8000"
+    restart: "unless-stopped"
+    volumes:
+      - "./app/sqlite.db:/app/sqlite.db"
