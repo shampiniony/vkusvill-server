@@ -17,4 +17,4 @@ app.add_middleware(
 )
 
 
-app.include_router(prefix="/goods", router=goods_router)
+app.include_router(prefix="/api/goods", router=goods_router)

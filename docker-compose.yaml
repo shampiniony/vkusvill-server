@@ -1,9 +1,22 @@
 services:
-  app:
+  backend:
     build: .
     container_name: backend
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
     restart: "unless-stopped"
     volumes:
       - "./app/sqlite.db:/app/sqlite.db"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.entrypoints=https
+      - traefik.http.routers.backend.rule=Host(`vv.shamps.dev`) && (PathPrefix(`/api`) || (PathPrefix(`/docs`)
+      - traefik.http.routers.backend.tls.certresolver=letsEncrypt
+      - traefik.http.services.backend.loadbalancer.server.port=8000
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    name: traefik
+    external: true
