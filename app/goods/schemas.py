@@ -5,7 +5,7 @@ from pydantic import BaseModel, conint
 
 
 class GoodsCreate(BaseModel):
-    sku_id: int
+    sku_id: str
     name: str
     category: str
     amount: int
@@ -16,7 +16,7 @@ class GoodsCreate(BaseModel):
 
 
 class Goods(BaseModel):
-    sku_id: int
+    sku_id: str
     name: str
     category: str
     amount: int

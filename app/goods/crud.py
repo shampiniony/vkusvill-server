@@ -24,7 +24,7 @@ def create_goods(db: Session, goods: GoodsCreate):
     return db_goods
 
 
-def get_goods_by_sku(db: Session, sku_id: int):
+def get_goods_by_sku(db: Session, sku_id: str):
     return db.query(Goods).filter(Goods.sku_id == sku_id).first()
 
 
@@ -32,7 +32,7 @@ def get_goods_by_shelve(db: Session, shelve: str):
     return db.query(Goods).filter(Goods.shelve == shelve).all()
 
 
-def update_goods_amount(db: Session, sku_id: int, new_amount: int):
+def update_goods_amount(db: Session, sku_id: str, new_amount: int):
     db_goods = db.query(Goods).filter(Goods.sku_id == sku_id).first()
     if db_goods:
         db_goods.amount = new_amount
