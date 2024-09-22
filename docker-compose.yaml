@@ -8,7 +8,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.entrypoints=https
-      - traefik.http.routers.backend.rule=Host(`vv.shamps.dev`) && (PathPrefix(`/api`) || PathPrefix(`/docs`))
+      - traefik.http.routers.backend.rule=Host(`vv.shamps.dev`) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/openapi.json`))
       - traefik.http.routers.backend.tls.certresolver=letsEncrypt
       - traefik.http.services.backend.loadbalancer.server.port=8000
     networks:
