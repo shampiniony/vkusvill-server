@@ -71,10 +71,14 @@ def read_all_goods(db: Session = Depends(get_db)):
     return crud.get_all_goods(db=db)
 
 
-@router.get("/shelves/", response_model=list[str])
+@router.get("/shelves/", response_model=list[dict])
 def read_all_shelves(db: Session = Depends(get_db)):
-    shelves = crud.get_all_shelves(db=db)
-    return [shelve[0] for shelve in shelves]
+    shelves_with_avg_trigger = crud.get_all_shelves_with_avg_trigger(db=db)
+
+    return [
+        {"shelve": shelve, "avg_trigger": avg_trigger}
+        for shelve, avg_trigger in shelves_with_avg_trigger
+    ]
 
 
 @router.put("/dt/{new_dt}", response_model=list[Goods])

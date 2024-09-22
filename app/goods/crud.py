@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import distinct
+from sqlalchemy import distinct, func
 from sqlalchemy.orm import Session
 
 from .models import Goods
@@ -47,3 +47,7 @@ def get_all_goods(db: Session):
 
 def get_all_shelves(db: Session):
     return db.query(distinct(Goods.shelve)).all()
+
+
+def get_all_shelves_with_avg_trigger(db: Session):
+    return db.query(Goods.shelve, func.avg(Goods.trigger)).group_by(Goods.shelve).all()
